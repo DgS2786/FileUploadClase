@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Subida de Archivos Completamente Segura</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sube tu archivo PDF</h1>
+        <h1>Este servidor es muy seguro, para nada puedes subir otros archivos, no lo intentes!!!</h1>
+
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput" accept=".pdf,application/pdf,application/x-pdf">
+            <button type="submit">Subir</button>
+        </form>
+
+        <script>
+            const form = document.getElementById('uploadForm');
+            const fileInput = document.getElementById('fileInput');
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const f = fileInput.files[0];
+                if (!f) {
+                    alert('Selecciona un archivo primero.');
+                    return;
+                }
+
+// --------------------------       
+        
+                const allowedExt = /\.pdf$/i;
+                const mimeOK = f.type === 'application/pdf';
+                const extOK = allowedExt.test(f.name);
+
+                if (!mimeOK && !extOK) {
+                    alert('El archivo seleccionado no parece un PDF. Selecciona un .pdf válido.');
+                    fileInput.value = ''; // limpiar selección
+                    return; // detener envío
+                }
+
+// --------------------------
+
+                // envío sin validación de PDF
+                const fd = new FormData();
+                fd.append('file', f);
+
+                try {
+                    const res = await fetch('/upload', {
+                        method: 'POST',
+                        body: fd
+                    });
+                    const text = await res.text();
+
+                    if (res.ok) {
+                        alert('Tu archivo se encuentra en /uploads\n' + text);
+                        fileInput.value = '';
+                    } else {
+                        alert('Error al subir el archivo: ' + text);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Error de red al subir el archivo');
+                }
+            });
+        </script>
+
+    </div>
+
+</body>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 420px;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    label {
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    input[type="file"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    button {
+        padding: 10px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .links {
+        margin-top: 14px;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .links a {
+        font-size: 0.9rem;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .links a:hover {
+        text-decoration: underline;
+    }
+
+    .footer {
+        margin-top: 18px;
+        font-size: 0.85em;
+        color: #777;
+    }
+</style>
+
+</html>
