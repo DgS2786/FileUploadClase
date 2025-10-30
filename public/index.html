@@ -32,15 +32,6 @@
 
 // --------------------------       
         
-                const allowedExt = /\.pdf$/i;
-                const mimeOK = f.type === 'application/pdf';
-                const extOK = allowedExt.test(f.name);
-
-                if (!mimeOK && !extOK) {
-                    alert('El archivo seleccionado no parece un PDF. Selecciona un .pdf válido.');
-                    fileInput.value = ''; // limpiar selección
-                    return; // detener envío
-                }
 
 // --------------------------
 
